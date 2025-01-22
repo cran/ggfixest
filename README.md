@@ -9,8 +9,11 @@
 status](https://www.r-pkg.org/badges/version/ggfixest)](https://CRAN.R-project.org/package=ggfixest)
 [![R-universe status
 badge](https://grantmcdermott.r-universe.dev/badges/ggfixest)](https://grantmcdermott.r-universe.dev)
+[![CRAN
+checks](https://badges.cranchecks.info/worst/ggfixest.svg)](https://cran.r-project.org/web/checks/check_results_ggfixest.html)
 [![R-CMD-check](https://github.com/grantmcdermott/ggfixest/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/grantmcdermott/ggfixest/actions/workflows/R-CMD-check.yaml)
-[![Docs](https://img.shields.io/badge/docs-homepage-blue.svg)](https://grantmcdermott.com/ggfixest/index.html)
+[![Docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://grantmcdermott.com/ggfixest/index.html)
+[![Docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://grantmcdermott.com/ggfixest/dev/index.html)
 <!-- badges: end -->
 
 The **ggfixest** package provides dedicated **ggplot2** plotting methods
@@ -46,7 +49,7 @@ number of examples in the help documentation. (Also available by typing
 `?ggcoefplot` or `?ggiplot` in your R console.) But here are a few
 quickstart examples to whet your appetite.
 
-Start by loading the **ggfixest** packages.
+Start by loading the **ggfixest** package.
 
 ``` r
 library(ggfixest)
@@ -54,9 +57,9 @@ library(ggfixest)
 #> Loading required package: fixest
 ```
 
-Note this automatically loaded **ggplot2** and **fixest** too as
-required dependencies. As the package name suggests, **ggfixest** *only*
-supports **fixest** model objects.[^1]
+Note that this automatically loads **ggplot2** and **fixest** as
+required dependencies too. As the package name suggests, **ggfixest**
+*only* supports **fixest** model objects.[^1]
 
 ### Coefficient plots
 

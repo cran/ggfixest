@@ -103,10 +103,12 @@ legend('topleft', col = c(1, 2), pch = c(20, 17), legend = c('Evens', 'Odds'))
 ggiplot(est_twfe_grp, ref.line = -1, main = 'Staggered treatment: TWFE')
 
 ## ----stagg_grp_multi_iplot, error = TRUE--------------------------------------
+try({
 iplot(
 	list('TWFE' = est_twfe_grp, 'Sun & Abraham (2020)' = est_sa20_grp),
 	ref.line = -1, main = 'Staggered treatment: Split mutli-sample'
 	)
+})
 
 ## ----stagg_grp_multi_ggiplot--------------------------------------------------
 ggiplot(
