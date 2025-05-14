@@ -1,3 +1,15 @@
+# ggfixest 0.3.0
+
+### New features
+
+- The new `aggr_es(..., period = "diff")` convenience keyword argument allows
+	users to estimate the difference between the (mean) post- and pre-treatment
+	periods. Thanks to @FBrunamonti for the suggestion. (#52).
+
+### Internals
+
+- Bump `svglite` dependency version and update test snapshots. (#51) 
+
 # ggfixest 0.2.0
 
 ### Bug fixes
