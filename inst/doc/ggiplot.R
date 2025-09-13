@@ -3,6 +3,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+fixest::fixest_startup_msg(FALSE)
 
 ## ----setup--------------------------------------------------------------------
 library(ggfixest)

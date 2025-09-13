@@ -2,7 +2,7 @@
 #'   objects.
 #'
 #' @description Draws the `ggplot2` equivalents of [`fixest::coefplot`] and
-#'   [`fixest::iplot`]. These "gg" versions do their best to recycle the same
+#'   [`fixest::iplot`]. These `"gg*"` versions do their best to recycle the same
 #'   arguments  and plotting logic as their original base counterparts. But they
 #'   also support additional features via the `ggplot2` API and infrastructure.
 #'   The overall goal remains the same as the original functions. To wit:
@@ -56,7 +56,7 @@
 #'   `ci.fill.par = list(alpha = 0.2)` (the default alpha is 0.3).
 #'   * `dict` a dictionary for overriding coefficient names.
 #'   * `vcov`, `cluster` or `se` as alternative options for adjusting the
-#'   standard errors of the model object(s) on the fly. See `summary.fixest` for
+#'   standard errors of the model object(s) on the fly. See `vcov.fixest` for
 #'   details. Written here in superseding order; `cluster` will only be
 #'   considered if `vcov` is not null, etc.
 #' @details These functions generally try to mimic the functionality and (where
@@ -88,20 +88,19 @@
 #'
 #' ggcoefplot(est)
 #'
+#' # Add/compare multiple SE types on the fly
+#' ggcoefplot(est, vcov = list("iid", "hc1"))
+#' # ... or as separate facets
+#' ggcoefplot(est, vcov = list("iid", "hc1"), multi_style = "facet") +
+#' 	 theme(legend.position = "none")
+#'
 #' # Show multiple CIs
 #' ggcoefplot(est, ci_level = c(0.8, 0.95))
-#'
-#' # By default, fixest model standard errors are clustered by the first fixed
-#' # effect (here: Species).
-#' # But we can easily switch to "regular" standard-errors
-#' est_std = summary(est, se = "iid")
-#'
-#' # You can plot both results at once in the same plot frame...
-#' ggcoefplot(list("Clustered" = est, "IID" = est_std))
-#' # ... or as separate facets
-#' ggcoefplot(list("Clustered" = est, "IID" = est_std), multi_style = "facet") +
-#' 	theme(legend.position = "none")
-#'
+#' 
+#' # Combine multiple CIs with multiple SE types
+#' ggcoefplot(est, ci_level = c(0.8, 0.95), vcov = list("iid", "hc1"))
+#' 
+#' #
 #'
 #' #
 #' # Example 2: Interactions
@@ -114,7 +113,8 @@
 #' base_inter = base_did
 #'
 #' # We interact the variable 'period' with the variable 'treat'
-#' est_did = feols(y ~ x1 + i(period, treat, 5) | id + period, base_inter)
+#' est_did = feols(y ~ x1 + i(period, treat, 5) | id + period, base_inter,
+#'                 vcov = ~id)
 #'
 #' # In the estimation, the variable treat is interacted
 #' #  with each value of period but 5, set as a reference
@@ -153,20 +153,16 @@
 #' ggiplot(est_did, pt.join = TRUE, geom_style = "errorbar", dict = dict)
 #'
 #' #
-#' # What if the interacted variable is not numeric?
-#'
+#' # What if the interacted variable is not numeric? (tl;dr use a factor)
+#' 
 #' # let's re-use our all_months vector from the previous example, but add it
 #' # directly to the dataset
 #' base_inter$period_month = all_months[base_inter$period]
-#'
-#' # The new estimation
-#' est = feols(y ~ x1 + i(period_month, treat, "oct") | id + period, base_inter)
-#' # Since 'period_month' of type character, iplot/coefplot both sort it
-#' ggiplot(est)
-#'
-#' # To respect a plotting order, use a factor
+#' # NB: Since 'period_month' of type character, iplot/coefplot both sort it
+#' #     alphabetically... To respect a plotting order, rather use a factor
 #' base_inter$month_factor = factor(base_inter$period_month, levels = all_months)
-#' est     = feols(y ~ x1 + i(month_factor, treat, "oct") | id + period, base_inter)
+#' est = feols(y ~ x1 + i(month_factor, treat, "oct") | id + period, base_inter,
+#'             vcov = ~id)
 #' ggiplot(est)
 #'
 #' # dict -> c("old_name" = "new_name")
@@ -183,7 +179,8 @@
 #' # global fixest settings like setFixest_dict(). SImple example:
 #'
 #' base_inter$letter = letters[base_inter$period]
-#' est_letters = feols(y ~ x1 + i(letter, treat, 'e') | id+letter, base_inter)
+#' est_letters = feols(y ~ x1 + i(letter, treat, 'e') | id + letter, base_inter,
+#'                     vcov = ~id)
 #'
 #' # Set global dictionary for capitalising the letters
 #' dict = LETTERS[1:10]; names(dict) = letters[1:10]
@@ -224,11 +221,13 @@
 #' data(base_stagg)
 #' est_twfe = feols(
 #'   y ~ x1 + i(time_to_treatment, treated, ref = c(-1, -1000)) | id + year,
-#'   base_stagg
+#'   base_stagg,
+#'   vcov = ~id
 #' )
 #' est_sa20 = feols(
 #'   y ~ x1 + sunab(year_treated, year) | id + year,
-#'   data = base_stagg
+#'   data = base_stagg,
+#'   vcov = ~id
 #' )
 #'
 #' # Plot both regressions in a faceted plot
@@ -248,11 +247,13 @@
 #' # generate fixest_multi objects.
 #' est_twfe_grp = feols(
 #'   y ~ x1 + i(time_to_treatment, treated, ref = c(-1, -1000)) | id + year,
-#'   data = base_stagg_grp, split = ~ grp
+#'   data = base_stagg_grp, split = ~ grp,
+#'   vcov = ~id
 #' )
 #' est_sa20_grp = feols(
 #'   y ~ x1 + sunab(year_treated, year) | id + year,
-#'   data = base_stagg_grp, split = ~ grp
+#'   data = base_stagg_grp, split = ~ grp,
+#'   vcov = ~id
 #' )
 #'
 #' # ggiplot combines the list of multi-estimation objects without a problem...
@@ -269,7 +270,7 @@
 #'   xlab = 'Time to treatment',
 #'   multi_style = 'facet',
 #'   geom_style = 'ribbon',
-#'   facet_args = list(labeller = labeller(id = \(x) gsub(".*: ", "", x))),
+#'   facet_args = list(labeller = labeller(id = function(x) gsub(".*: ", "", x))),
 #'   theme = theme_minimal() +
 #'     theme(
 #'       text = element_text(family = 'HersheySans'),
@@ -277,21 +278,6 @@
 #'       legend.position = 'none'
 #'     )
 #' )
-#'
-#' #
-#' # Aside on theming and scale adjustments
-#' #
-#'
-#' # Setting the theme inside the `ggiplot()` call is optional and not strictly
-#' # necessary, since the ggplot2 API allows programmatic updating of existing
-#' # plots. E.g.
-#' last_plot() +
-#' 	labs(caption = 'Note: Super fancy plot brought to you by ggiplot')
-#' last_plot() +
-#' 	theme_grey() +
-#' 	theme(legend.position = 'none') +
-#' 	scale_fill_brewer(palette = 'Set1', aesthetics = c("colour", "fill"))
-#' # etc.
 #'
 #' @export
 ggcoefplot = function(

@@ -1,3 +1,27 @@
+# ggfixest 0.4.0
+
+### New features
+
+- Users can now supply a list of vcov arguments to compare multiple SE 
+  adjustments on the fly. (#65)
+  
+  ```r
+  est = est = feols(flipper_len ~ bill_len | species, penguins)
+  ggcoefplot(est, vcov = list("iid", "hc1", ~species))
+  ```
+
+### Bug fixes
+
+- The `keep` and `drop` arguments now work correctly with a list of models.
+  Thanks to @femdias for the report. (#60)
+- If a (named) list of models if provided to either `ggcoefplot` or `ggiplot`
+  then the original order is preserved for grouping and facet behaviour (#63)
+
+### Internals
+
+- Bump `ggplot2` dependency to v4.0.0 and update test snapshots. (#55, #59) 
+- Bump `fixest` dependency to v0.13.0 and update tests. (#58, #59) 
+
 # ggfixest 0.3.0
 
 ### New features
